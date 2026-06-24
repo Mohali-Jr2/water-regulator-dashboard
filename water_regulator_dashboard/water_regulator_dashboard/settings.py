@@ -70,7 +70,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Address encoded into meter QR codes. Override this when the regulator
 # dashboard moves to another host or domain.
-QR_BASE_URL = os.environ.get('QR_BASE_URL', 'http://192.168.1.78:8000').rstrip('/')
+QR_BASE_URL = os.environ.get('QR_BASE_URL', 'http://192.168.235.5:8000').rstrip('/')
 
 MTN_MOMO_BASE_URL = os.environ.get(
     'MTN_MOMO_BASE_URL',
