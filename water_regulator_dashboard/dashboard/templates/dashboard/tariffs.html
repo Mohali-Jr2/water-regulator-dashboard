@@ -1,0 +1,46 @@
+{% extends 'dashboard/base.html' %}
+{% block content %}
+<div class="alert alert-info">
+  Domestic, Commercial and Industrial tariffs can all be active because each meter uses its assigned category.
+  Saving an existing category updates its rate.
+</div>
+<div class="row">
+  <div class="col-md-4">
+    <div class="x_panel">
+      <div class="x_title"><h2>Define Tariff</h2><div class="clearfix"></div></div>
+      <div class="x_content">
+        <form method="post">
+          {% csrf_token %}
+          {% for field in form %}
+            <div class="form-group"><label>{{ field.label }}</label>{{ field }}{{ field.errors }}</div>
+          {% endfor %}
+          <button class="btn btn-success"><i class="fa fa-save"></i> Save Tariff</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <div class="x_panel">
+      <div class="x_title"><h2>Tariff Categories</h2><div class="clearfix"></div></div>
+      <div class="x_content">
+        <table class="table table-striped">
+          <thead><tr><th>Category</th><th>Rate</th><th>Effective From</th><th>Assigned Meters</th><th>Status</th></tr></thead>
+          <tbody>
+          {% for tariff in tariffs %}
+            <tr>
+              <td><strong>{{ tariff.name }}</strong></td>
+              <td>UGX {{ tariff.rate_per_litre }}/L</td>
+              <td>{{ tariff.effective_from }}</td>
+              <td>{{ tariff.meters.count }}</td>
+              <td>{% if tariff.active %}<span class="label label-success">Active</span>{% else %}<span class="label label-default">Inactive</span>{% endif %}</td>
+            </tr>
+          {% empty %}
+            <tr><td colspan="5" class="empty-state">No tariff categories defined.</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-6 col-sm-12 col-xs-12">
+      <div class="x_panel">
+      <div class="x_title">
+        <h2>{{ form_title|default:"Add Water User" }}</h2>
+        <div class="clearfix"></div>
+      </div>
+
+      <div class="x_content">
+        <form method="POST">
+          {% csrf_token %}
+
+          <div class="form-group">
+            <label>Full Name</label>
+            {{ form.full_name }}
+          </div>
+
+          <div class="form-group">
+            <label>Phone Number</label>
+            {{ form.phone_number }}
+
+            {% if form.phone_number.errors %}
+              <div class="alert alert-danger" style="margin-top:5px;">
+                {{ form.phone_number.errors }}
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="form-group">
+            <label>Location</label>
+            {{ form.location }}
+          </div>
+
+          <div class="form-group">
+            <label>National ID (NIN)</label>
+            {{ form.nin }}
+
+            <!-- ✅ ERROR DISPLAY -->
+            {% if form.nin.errors %}
+              <div class="alert alert-danger" style="margin-top:5px;">
+                {{ form.nin.errors }}
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="form-group">
+            <label>Land Status</label>
+            {{ form.land_status }}
+          </div>
+
+          <button type="submit" class="btn btn-success">
+            <i class="fa fa-save"></i> {{ submit_label|default:"Save User" }}
+          </button>
+
+          <a href="{% url 'meters' %}" class="btn btn-default">
+            Back to Meters
+          </a>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

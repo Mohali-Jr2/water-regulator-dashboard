@@ -1,0 +1,29 @@
+{% extends 'dashboard/base.html' %}
+{% block content %}
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    <div class="x_panel">
+      <div class="x_title"><h2>Account Photo</h2><div class="clearfix"></div></div>
+      <div class="x_content text-center">
+        {% if profile.photo %}
+          <img src="{{ profile.photo.url }}" class="img-circle" width="150" height="150" style="object-fit:cover; margin-bottom:20px;" alt="{{ request.user.username }}">
+        {% else %}
+          <div class="img-circle" style="width:150px;height:150px;margin:0 auto 20px;background:#102a43;color:#fff;font-size:52px;line-height:150px;font-weight:800;">
+            {{ request.user.username|first|upper }}
+          </div>
+        {% endif %}
+        <form method="post" enctype="multipart/form-data" class="text-left">
+          {% csrf_token %}
+          <div class="form-group">
+            <label>Choose a profile photo</label>
+            {{ form.photo }}
+            {{ form.photo.errors }}
+            <p class="help-block">PNG, JPEG or WebP, up to 5 MB.</p>
+          </div>
+          <button class="btn btn-success"><i class="fa fa-upload"></i> Upload Photo</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

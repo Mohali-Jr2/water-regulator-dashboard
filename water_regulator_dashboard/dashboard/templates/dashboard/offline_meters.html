@@ -1,0 +1,9 @@
+{% extends 'dashboard/base.html' %}
+{% block content %}
+<div class="alert alert-info"><i class="fa fa-clock-o"></i> A meter is shown here when it has not contacted the system for <strong>{{ offline_hours }} hours</strong>.</div>
+<div class="x_panel"><div class="x_title"><h2>Offline Meters</h2><div class="clearfix"></div></div><div class="x_content">
+<table class="table table-striped"><thead><tr><th>Meter</th><th>Customer</th><th>Location</th><th>Last Seen</th><th>Action</th></tr></thead><tbody>
+{% for meter in meters %}<tr><td><strong>{{ meter.meter_code }}</strong></td><td>{{ meter.user.full_name }}</td><td>{{ meter.location }}</td><td>{{ meter.last_seen|default:"Never reported" }}</td><td><a class="btn btn-primary btn-xs" href="{% url 'meter_detail' meter.id %}">Inspect</a></td></tr>
+{% empty %}<tr><td colspan="5" class="empty-state">All meters have reported within the last 24 hours.</td></tr>{% endfor %}
+</tbody></table></div></div>
+{% endblock %}

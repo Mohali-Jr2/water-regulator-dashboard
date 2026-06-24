@@ -1,0 +1,5 @@
+{% extends 'dashboard/base.html' %}
+{% block content %}
+<div class="row"><div class="col-md-4"><div class="x_panel"><div class="x_title"><h2>Send Notification</h2><div class="clearfix"></div></div><div class="x_content"><form method="post">{% csrf_token %}{% for field in form %}<div class="form-group"><label>{{ field.label }}</label>{{ field }}{{ field.errors }}</div>{% endfor %}<button class="btn btn-success"><i class="fa fa-paper-plane"></i> Send</button></form></div></div></div>
+<div class="col-md-8"><div class="x_panel"><div class="x_title"><h2>Delivery Log</h2><div class="clearfix"></div></div><div class="x_content"><table class="table table-striped"><thead><tr><th>Customer</th><th>Channel</th><th>Subject</th><th>Status</th><th>Time</th></tr></thead><tbody>{% for item in notifications %}<tr><td>{{ item.water_user.full_name }}</td><td>{{ item.channel }}</td><td>{{ item.subject }}</td><td>{{ item.status }}</td><td>{{ item.created_at }}</td></tr>{% empty %}<tr><td colspan="5" class="empty-state">No notifications sent.</td></tr>{% endfor %}</tbody></table></div></div></div></div>
+{% endblock %}

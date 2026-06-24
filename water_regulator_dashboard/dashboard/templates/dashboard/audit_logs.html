@@ -1,0 +1,6 @@
+{% extends 'dashboard/base.html' %}
+{% block content %}
+<div class="x_panel"><div class="x_title"><h2>System Activity</h2><div class="clearfix"></div></div><div class="x_content">
+<form class="filter-bar" method="get"><div class="form-group"><label>Search audit trail</label><input name="q" value="{{ query }}" class="form-control" placeholder="User, action, description"></div><button class="btn btn-primary"><i class="fa fa-search"></i> Search</button></form>
+<table class="table table-striped"><thead><tr><th>Time</th><th>User</th><th>Action</th><th>Record</th><th>Description</th><th>IP</th></tr></thead><tbody>{% for log in logs %}<tr><td>{{ log.created_at }}</td><td>{{ log.actor|default:"System" }}</td><td>{{ log.action }}</td><td>{{ log.entity_type }} #{{ log.entity_id }}</td><td>{{ log.description }}</td><td>{{ log.ip_address|default:"-" }}</td></tr>{% empty %}<tr><td colspan="6" class="empty-state">No matching activity.</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

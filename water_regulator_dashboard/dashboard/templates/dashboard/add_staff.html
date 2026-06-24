@@ -1,0 +1,49 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-6 col-sm-12 col-xs-12">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2>Add Staff Member</h2>
+        <div class="clearfix"></div>
+      </div>
+
+      <div class="x_content">
+
+        <div class="alert alert-info">
+          Staff ID will be generated automatically.
+        </div>
+
+        <form method="POST">
+          {% csrf_token %}
+
+          <div class="form-group">
+            <label>Full Name</label>
+            {{ form.full_name }}
+          </div>
+
+          <div class="form-group">
+            <label>Role</label>
+            {{ form.role }}
+          </div>
+
+          <div class="form-group">
+            <label>Phone Number</label>
+            {{ form.phone_number }}
+          </div>
+
+          <button type="submit" class="btn btn-success">
+            <i class="fa fa-save"></i> Save Staff
+          </button>
+
+          <a href="{% url 'meters' %}" class="btn btn-default">
+            Back
+          </a>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

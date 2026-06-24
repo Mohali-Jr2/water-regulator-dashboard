@@ -1,0 +1,625 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>
+    {{ page_title|default:'Water Regulator Dashboard' }}
+  </title>
+
+  <!-- CSS -->
+  <link rel="stylesheet"
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/gentelella/1.3.0/css/custom.min.css">
+
+  <style>
+
+    :root {
+      --navy: #071b2f;
+      --navy-2: #102a43;
+      --blue: #0f6fb2;
+      --aqua: #26c6da;
+      --mint: #22b573;
+      --amber: #f5a623;
+      --danger: #d9534f;
+      --paper: #ffffff;
+      --bg: #eef5f8;
+      --ink: #12263a;
+      --muted: #6b7b8f;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    .right_col {
+      min-height: 100vh;
+      padding: 24px 28px;
+      background:
+        linear-gradient(180deg, rgba(38,198,218,.12), rgba(238,245,248,0) 220px),
+        var(--bg) !important;
+    }
+
+    .metric-card {
+      border: 0;
+      border-left: 4px solid var(--aqua);
+      box-shadow: 0 14px 32px rgba(15, 47, 72, .08);
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+
+    .metric-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 38px rgba(15, 47, 72, .12);
+    }
+
+    .metric-number {
+      font-size: 30px;
+      font-weight: 900;
+      color: var(--navy-2);
+    }
+
+    .brand-title {
+      color: #ECF0F1;
+      font-size: 18px;
+      padding-top: 10px;
+      display: inline-block;
+      margin-left: 8px;
+      font-weight: 800;
+      letter-spacing: .2px;
+    }
+
+    .x_panel {
+      border: 0;
+      border-radius: 8px;
+      box-shadow: 0 14px 34px rgba(15, 47, 72, .08);
+      overflow: hidden;
+    }
+
+    .x_title {
+      border-bottom: 1px solid #e6eef5;
+      padding-bottom: 12px;
+    }
+
+    .x_title h2,
+    .page-title h3 {
+      color: var(--navy-2);
+      font-weight: 900;
+    }
+
+    .page-title {
+      margin-bottom: 18px;
+      background: var(--paper);
+      border-radius: 8px;
+      padding: 16px 18px;
+      box-shadow: 0 12px 28px rgba(15, 47, 72, .07);
+    }
+
+    .nav.side-menu > li > a {
+      font-weight: 700;
+      color: rgba(255,255,255,.84);
+      margin: 3px 10px;
+      border-radius: 8px;
+      transition: background .16s ease, color .16s ease;
+    }
+
+    .nav.side-menu > li > a:hover,
+    .nav.side-menu > li.active > a {
+      background: rgba(38, 198, 218, .16) !important;
+      color: #fff !important;
+    }
+
+    .status-badge {
+      padding: 4px 10px;
+      border-radius: 20px;
+      color: #fff;
+      font-size: 12px;
+      display: inline-block;
+    }
+
+    .status-Active {
+      background: var(--mint);
+    }
+
+    .status-Warning {
+      background: var(--amber);
+    }
+
+    .status-Offline {
+      background: var(--danger);
+    }
+
+    .severity-High {
+      color: var(--danger);
+      font-weight: 700;
+    }
+
+    .severity-Medium {
+      color: var(--amber);
+      font-weight: 700;
+    }
+
+    .chart-box {
+      height: 300px;
+    }
+
+    .left_col,
+    .nav-md .container.body .left_col,
+    .left_col .scroll-view {
+      background: linear-gradient(180deg, #071b2f 0%, #102a43 100%) !important;
+    }
+
+    .navbar.nav_title {
+      background: transparent !important;
+    }
+
+    .profile {
+      border-top: 1px solid rgba(255,255,255,.08);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      margin: 0 12px 10px;
+      border-radius: 8px;
+      background: rgba(255,255,255,.06);
+    }
+
+    .profile_info span {
+      color: rgba(255,255,255,.62);
+    }
+
+    .profile_info h2 {
+      color: #fff;
+      font-weight: 800;
+    }
+
+    .top_nav .nav_menu {
+      background: rgba(255,255,255,.92);
+      border-bottom: 1px solid #dde8f0;
+      box-shadow: 0 8px 22px rgba(15, 47, 72, .06);
+    }
+
+    .table {
+      background: #fff;
+    }
+
+    .table > thead > tr > th {
+      border-bottom: 0;
+      background: #f3f8fb;
+      color: var(--navy-2);
+      font-weight: 800;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) {
+      background-color: #fbfdff;
+    }
+
+    .btn {
+      border-radius: 8px;
+      font-weight: 700;
+      border: 0;
+    }
+
+    .btn-success {
+      background: var(--mint);
+    }
+
+    .btn-primary {
+      background: var(--blue);
+    }
+
+    .btn-info {
+      background: var(--aqua);
+      color: #073044;
+    }
+
+    .btn-warning {
+      background: var(--amber);
+    }
+
+    .form-control {
+      border-radius: 8px;
+      border: 1px solid #d7e1ec;
+      box-shadow: none;
+      min-height: 42px;
+    }
+
+    .alert {
+      border: 0;
+      border-radius: 8px;
+      box-shadow: 0 10px 22px rgba(15, 47, 72, .06);
+    }
+
+    .pagination > li > a,
+    .pagination > li > span {
+      border-color: #d8e5ee;
+      color: var(--blue);
+      font-weight: 700;
+    }
+
+    .pagination > .active > span {
+      background: var(--blue);
+      border-color: var(--blue);
+    }
+
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: end;
+      margin-bottom: 18px;
+      padding: 14px;
+      background: #f7fafc;
+      border: 1px solid #e2ebf2;
+      border-radius: 8px;
+    }
+
+    .filter-bar .form-group { margin: 0; min-width: 150px; }
+    .summary-tile { padding: 16px; border-left: 4px solid var(--aqua); background: #fff; margin-bottom: 18px; }
+    .summary-tile strong { display: block; font-size: 24px; color: var(--navy-2); }
+    .empty-state { padding: 30px; text-align: center; color: var(--muted); }
+
+    .profile-photo,
+    .profile-photo-fallback {
+      display: block;
+      object-fit: cover;
+      background: #fff;
+      color: var(--navy);
+      text-align: center;
+      font-weight: 900;
+    }
+
+    .profile-photo-fallback.profile_img {
+      line-height: 56px;
+      font-size: 22px;
+    }
+
+  </style>
+</head>
+
+<body class="nav-md">
+
+  <div class="container body">
+    <div class="main_container">
+
+      <!-- SIDEBAR -->
+      <div class="col-md-3 left_col">
+
+        <div class="left_col scroll-view">
+
+          <!-- LOGO -->
+          <div class="navbar nav_title"
+               style="border:0; padding-left:16px;">
+
+            <i class="fa fa-tint fa-2x"
+               style="color:#1ABB9C"></i>
+
+            <span class="brand-title">
+              Water Regulator
+            </span>
+
+          </div>
+
+          <div class="clearfix"></div>
+
+          <!-- PROFILE -->
+          <div class="profile clearfix"
+               style="padding:20px 15px;">
+
+            <div class="profile_pic">
+              <a href="{% url 'profile_photo' %}" title="Change profile photo">
+                {% if request.user.dashboard_profile.photo %}
+                  <img src="{{ request.user.dashboard_profile.photo.url }}"
+                       class="img-circle profile_img profile-photo"
+                       width="56" height="56" alt="{{ request.user.username }}">
+                {% else %}
+                  <span class="img-circle profile_img profile-photo-fallback">
+                    {{ request.user.username|first|upper }}
+                  </span>
+                {% endif %}
+              </a>
+
+            </div>
+
+            <div class="profile_info">
+
+              <span>Welcome,</span>
+
+              <h2>
+                {{ request.user.username }}
+              </h2>
+              <small style="color:rgba(255,255,255,.65);">{{ current_role }}</small>
+
+            </div>
+
+          </div>
+
+          <br>
+
+          <!-- MENU -->
+          <div id="sidebar-menu"
+               class="main_menu_side hidden-print main_menu">
+
+            <div class="menu_section">
+
+              <h3>General</h3>
+
+              <ul class="nav side-menu">
+
+                <!-- DASHBOARD -->
+                <li>
+                  <a href="{% url 'home' %}">
+                    <i class="fa fa-home"></i>
+                    Dashboard
+                  </a>
+                </li>
+
+                <!-- METERS -->
+                {% if '*' in role_permissions or 'meters_view' in role_permissions %}
+                <li>
+                  <a href="{% url 'meters' %}">
+                    <i class="fa fa-dashboard"></i>
+                    Meters
+                  </a>
+                </li>
+                {% endif %}
+
+                <!-- ASSIGNED USERS -->
+                {% if '*' in role_permissions or 'customers_view' in role_permissions %}
+                <li>
+                  <a href="{% url 'assigned_meter_users' %}">
+                    <i class="fa fa-users"></i>
+                    Assigned Meter Users
+                  </a>
+                </li>
+                {% endif %}
+
+                <!-- READINGS -->
+                {% if '*' in role_permissions or 'readings' in role_permissions %}
+                <li>
+                  <a href="{% url 'readings' %}">
+                    <i class="fa fa-bar-chart"></i>
+                    Readings
+                  </a>
+                </li>
+
+                <!-- DAILY USAGE BY METER -->
+                <li>
+                  <a href="{% url 'daily_usage_by_meter' %}">
+                    <i class="fa fa-tint"></i>
+                    Daily Usage By Meter
+                  </a>
+                </li>
+                {% endif %}
+
+                {% if '*' in role_permissions or 'offline_monitoring' in role_permissions %}
+                <li>
+                  <a href="{% url 'offline_meters' %}">
+                    <i class="fa fa-plug"></i>
+                    Offline Monitoring
+                  </a>
+                </li>
+                {% endif %}
+
+                <!-- ALERTS -->
+                {% if '*' in role_permissions or 'alerts' in role_permissions %}
+                <li>
+                  <a href="{% url 'alerts' %}">
+                    <i class="fa fa-bell"></i>
+                    Alerts
+                  </a>
+                </li>
+                {% endif %}
+
+                <!-- REPORTS -->
+                {% if '*' in role_permissions or 'reports' in role_permissions %}
+                <li>
+                  <a href="{% url 'reports' %}">
+                    <i class="fa fa-file-text"></i>
+                    Reports
+                  </a>
+                </li>
+                {% endif %}
+
+                {% if '*' in role_permissions or 'support' in role_permissions %}
+                <li>
+                  <a href="{% url 'support_tickets' %}">
+                    <i class="fa fa-life-ring"></i>
+                    Support Tickets
+                  </a>
+                </li>
+                {% endif %}
+
+                {% if '*' in role_permissions or 'notifications' in role_permissions %}
+                <li>
+                  <a href="{% url 'notifications' %}">
+                    <i class="fa fa-envelope"></i>
+                    Notifications
+                  </a>
+                </li>
+                {% endif %}
+
+                <!-- STAFF -->
+                {% if '*' in role_permissions or 'staff' in role_permissions %}
+                <li>
+                  <a href="{% url 'staff_members' %}">
+                    <i class="fa fa-users"></i>
+                    Staff Members
+                  </a>
+                </li>
+                {% endif %}
+
+                <!-- REPLACED METERS -->
+                {% if '*' in role_permissions or 'replacements' in role_permissions %}
+                <li>
+                  <a href="{% url 'replaced_meters' %}">
+                    <i class="fa fa-refresh"></i>
+                    Replaced Meters
+                  </a>
+                </li>
+                {% endif %}
+
+                <!-- REVENUE PAYMENTS -->
+                {% if '*' in role_permissions or 'revenue' in role_permissions %}
+                <li>
+                  <a href="{% url 'revenue_payments' %}">
+                    <i class="fa fa-money"></i>
+                    Revenue & Payments
+                  </a>
+                </li>
+                {% endif %}
+
+                {% if '*' in role_permissions or 'tariffs' in role_permissions %}
+                <li>
+                  <a href="{% url 'tariffs' %}">
+                    <i class="fa fa-calculator"></i>
+                    Tariffs
+                  </a>
+                </li>
+                {% endif %}
+
+                {% if '*' in role_permissions or 'audit' in role_permissions %}
+                <li>
+                  <a href="{% url 'audit_logs' %}">
+                    <i class="fa fa-history"></i>
+                    Audit Trail
+                  </a>
+                </li>
+                {% endif %}
+
+                {% if request.user.is_superuser %}
+                <li>
+                  <a href="{% url 'access_control' %}">
+                    <i class="fa fa-lock"></i>
+                    Roles & Access
+                  </a>
+                </li>
+                {% endif %}
+
+                <!-- LOGOUT -->
+                <li>
+                  <a href="{% url 'logout' %}">
+                    <i class="fa fa-sign-out"></i>
+                    Logout
+                  </a>
+                </li>
+
+              </ul>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- TOP NAV -->
+      <div class="top_nav">
+
+        <div class="nav_menu">
+
+          <nav>
+
+            <div class="nav toggle">
+
+              <a id="menu_toggle">
+                <i class="fa fa-bars"></i>
+              </a>
+
+            </div>
+
+            <ul class="nav navbar-nav navbar-right">
+
+              <li>
+
+                <a href="{% url 'profile_photo' %}"
+                   class="user-profile"
+                   title="Change profile photo">
+                  {% if request.user.dashboard_profile.photo %}
+                    <img src="{{ request.user.dashboard_profile.photo.url }}"
+                         class="profile-photo" width="28" height="28"
+                         alt="{{ request.user.username }}">
+                  {% else %}
+                    <span class="img-circle profile-photo-fallback"
+                          style="display:inline-block;width:28px;height:28px;line-height:28px;margin-right:8px;">
+                      {{ request.user.username|first|upper }}
+                    </span>
+                  {% endif %}
+
+                  {{ request.user.username }}
+
+                </a>
+
+              </li>
+
+            </ul>
+
+          </nav>
+
+        </div>
+
+      </div>
+
+      <!-- PAGE CONTENT -->
+      <div class="right_col"
+           role="main">
+
+        <div class="page-title">
+
+          <div class="title_left">
+
+            <h3>
+              {{ page_title|default:"Dashboard" }}
+            </h3>
+
+          </div>
+
+        </div>
+
+        <div class="clearfix"></div>
+
+        <!-- DJANGO MESSAGES -->
+        {% if messages %}
+
+          {% for message in messages %}
+
+            <div class="alert alert-info">
+
+              {{ message }}
+
+            </div>
+
+          {% endfor %}
+
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gentelella/1.3.0/js/custom.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  {% block extra_js %}
+  {% endblock %}
+
+</body>
+</html>

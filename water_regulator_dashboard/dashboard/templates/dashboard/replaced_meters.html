@@ -1,0 +1,77 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+
+      <div class="x_title">
+        <h2>Replaced Meters</h2>
+        <div class="clearfix"></div>
+      </div>
+
+      <div class="x_content">
+        <a href="{% url 'replace_meter' %}" class="btn btn-warning" style="margin-bottom:15px;">
+          <i class="fa fa-refresh"></i> Replace a Meter
+        </a>
+        <table class="table table-striped table-bordered">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Old Meter</th>
+              <th>New Meter</th>
+              <th>User</th>
+              <th>Reason</th>
+              <th>Description</th>
+              <th>Replaced By</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for replacement in replacement_rows %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+
+              <td>{{ replacement.old_meter.meter_code }}</td>
+
+              <td>{{ replacement.new_meter.meter_code }}</td>
+
+              <td>{{ replacement.old_meter.user.full_name }}</td>
+
+              <td>{{ replacement.reason }}</td>
+
+              <td>{{ replacement.description }}</td>
+
+              <!-- Improved Staff Display -->
+              <td>
+                {% if replacement.replaced_by %}
+                  {{ replacement.replaced_by.full_name }}
+                  <br>
+                  <small class="text-muted">
+                    {{ replacement.replaced_by.staff_id }}
+                  </small>
+                {% else %}
+                  <span class="text-danger">Unknown</span>
+                {% endif %}
+              </td>
+
+              <!-- Formatted Date -->
+              <td>{{ replacement.replacement_date|date:"d M Y" }}</td>
+
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="8" class="text-center">
+                No meter replacements recorded yet.
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

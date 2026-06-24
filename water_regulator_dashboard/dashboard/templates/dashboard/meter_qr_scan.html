@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ meter.meter_code }} | Water Regulator</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style>
+    body { margin: 0; background: #eef5f8; color: #12263a; font-family: "Segoe UI", Arial, sans-serif; }
+    .scan-header { background: #071b2f; color: #fff; padding: 28px 20px; }
+    .scan-header strong { font-size: 20px; margin-left: 8px; }
+    .scan-wrap { width: min(620px, calc(100% - 32px)); margin: 32px auto; }
+    .scan-panel { background: #fff; border-radius: 8px; box-shadow: 0 16px 38px rgba(15,47,72,.12); overflow: hidden; }
+    .scan-title { padding: 24px; border-bottom: 1px solid #e5edf3; }
+    .scan-title h1 { margin: 0 0 8px; font-size: 30px; font-weight: 800; }
+    .verified { color: #16865f; font-weight: 700; }
+    .scan-body { padding: 24px; }
+    .detail { display: flex; justify-content: space-between; gap: 20px; padding: 14px 0; border-bottom: 1px solid #edf2f5; }
+    .detail:last-child { border-bottom: 0; }
+    .detail span { color: #6b7b8f; }
+    .detail strong { text-align: right; }
+    .status { display: inline-block; padding: 5px 10px; border-radius: 16px; color: #fff; background: #22b573; }
+    .status.offline, .status.closed { background: #d9534f; }
+  </style>
+</head>
+<body>
+  <header class="scan-header">
+    <i class="fa fa-tint fa-2x"></i><strong>Water Regulator</strong>
+  </header>
+  <main class="scan-wrap">
+    <section class="scan-panel">
+      <div class="scan-title">
+        <h1>{{ meter.meter_code }}</h1>
+        <div class="verified"><i class="fa fa-check-circle"></i> Registered meter verified</div>
+      </div>
+      <div class="scan-body">
+        <div class="detail"><span>Assigned customer</span><strong>{{ meter.user.full_name }}</strong></div>
+        <div class="detail"><span>Location</span><strong>{{ meter.location }}</strong></div>
+        <div class="detail"><span>Tariff category</span><strong>{{ meter.tariff.name|default:"Not assigned" }}</strong></div>
+        <div class="detail"><span>Meter status</span><strong><span class="status {% if meter.effective_status == 'Offline' %}offline{% endif %}">{{ meter.effective_status }}</span></strong></div>
+        <div class="detail"><span>Valve</span><strong><span class="status {% if not meter.valve_open %}closed{% endif %}">{% if meter.valve_open %}Open{% else %}Closed{% endif %}</span></strong></div>
+        <div class="detail"><span>Last communication</span><strong>{{ meter.last_seen|default:"Not yet reported" }}</strong></div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

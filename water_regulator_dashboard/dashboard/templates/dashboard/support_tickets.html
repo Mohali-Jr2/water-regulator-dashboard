@@ -1,0 +1,9 @@
+{% extends 'dashboard/base.html' %}
+{% block content %}
+<div class="x_panel"><div class="x_title"><h2>Support Queue</h2><div class="clearfix"></div></div><div class="x_content">
+<form method="get" class="filter-bar"><div class="form-group"><label>Status</label><select name="status" class="form-control"><option value="">All statuses</option><option {% if status_filter == 'Pending' %}selected{% endif %}>Pending</option><option {% if status_filter == 'In Progress' %}selected{% endif %}>In Progress</option><option {% if status_filter == 'Resolved' %}selected{% endif %}>Resolved</option><option {% if status_filter == 'Closed' %}selected{% endif %}>Closed</option></select></div><button class="btn btn-primary">Filter</button></form>
+<table class="table table-striped"><thead><tr><th>#</th><th>Issue</th><th>Customer</th><th>Priority</th><th>Status</th><th>Customer Notified</th><th>Assigned To</th><th>Created</th><th></th></tr></thead><tbody>
+{% for ticket in tickets %}<tr><td>#{{ ticket.id }}</td><td>{{ ticket.issue_type }}</td><td>{{ ticket.water_user.full_name|default:ticket.phone_number }}</td><td>{{ ticket.priority }}</td><td>{{ ticket.status }}</td><td>{% if ticket.customer_notified_at %}<span class="label label-success">Yes</span><br><small>{{ ticket.customer_notified_at }}</small>{% else %}<span class="text-muted">Not yet</span>{% endif %}</td><td>{{ ticket.assigned_to|default:"Unassigned" }}</td><td>{{ ticket.created_at }}</td><td><a href="{% url 'support_ticket_detail' ticket.id %}" class="btn btn-primary btn-xs">Manage</a></td></tr>
+{% empty %}<tr><td colspan="9" class="empty-state">No support tickets found.</td></tr>{% endfor %}
+</tbody></table></div></div>
+{% endblock %}

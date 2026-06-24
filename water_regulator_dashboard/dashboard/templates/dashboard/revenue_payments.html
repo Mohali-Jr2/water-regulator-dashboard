@@ -1,0 +1,114 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-3"><div class="summary-tile"><span>Filtered revenue</span><strong>UGX {{ total_revenue|floatformat:0 }}</strong></div></div>
+  <div class="col-md-3"><div class="summary-tile"><span>Today</span><strong>UGX {{ today_revenue|floatformat:0 }}</strong></div></div>
+  <div class="col-md-3"><div class="summary-tile"><span>Outstanding</span><strong>UGX {{ unpaid_total|floatformat:0 }}</strong></div></div>
+  <div class="col-md-3"><div class="summary-tile"><span>Bills</span><strong>{{ paid_bills }} paid / {{ unpaid_bills }} due</strong></div></div>
+</div>
+
+<div class="row">
+  <div class="col-md-12">
+
+    <div class="x_panel">
+      <div class="x_title">
+        <h2>
+          <i class="fa fa-money"></i>
+          Revenue & Payments
+        </h2>
+        <div class="clearfix"></div>
+      </div>
+
+      <div class="x_content">
+        <form method="get" class="filter-bar">
+          <div class="form-group"><label>Search</label><input class="form-control" name="q" value="{{ filters.q }}" placeholder="Meter, transaction, phone"></div>
+          <div class="form-group"><label>Method</label><select class="form-control" name="method"><option value="">All methods</option>{% for value,label in methods %}<option value="{{ value }}" {% if filters.method == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
+          <div class="form-group"><label>From</label><input type="date" class="form-control" name="start" value="{{ filters.start }}"></div>
+          <div class="form-group"><label>To</label><input type="date" class="form-control" name="end" value="{{ filters.end }}"></div>
+          <button class="btn btn-primary"><i class="fa fa-search"></i> Filter</button>
+        </form>
+
+        <table class="table table-striped table-bordered">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Meter Code</th>
+              <th>Billing Period</th>
+              <th>Amount Paid</th>
+              <th>Payment Method</th>
+              <th>Phone Number</th>
+              <th>Transaction ID</th>
+              <th>Status</th>
+              <th>Date Paid</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            {% for payment in payments %}
+
+            <tr>
+              <td>{{ forloop.counter }}</td>
+
+              <td>
+                {{ payment.bill.meter_code }}
+              </td>
+
+              <td>
+                {{ payment.bill.billing_period }}
+              </td>
+
+              <td>
+                UGX {{ payment.amount_paid }}
+              </td>
+
+              <td>
+                {{ payment.payment_method }}
+              </td>
+
+              <td>
+                {{ payment.phone_number }}
+              </td>
+
+              <td>
+                {{ payment.transaction_id }}
+              </td>
+
+              <td>
+                {% if payment.payment_status == 'Successful' %}
+                  <span class="label label-success">
+                    Successful
+                  </span>
+                {% else %}
+                  <span class="label label-warning">
+                    {{ payment.payment_status }}
+                  </span>
+                {% endif %}
+              </td>
+
+              <td>
+                {{ payment.paid_at }}
+              </td>
+            </tr>
+
+            {% empty %}
+
+            <tr>
+              <td colspan="9" class="text-center">
+                No payment records available
+              </td>
+            </tr>
+
+            {% endfor %}
+
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

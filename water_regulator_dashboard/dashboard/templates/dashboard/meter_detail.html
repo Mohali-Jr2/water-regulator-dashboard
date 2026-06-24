@@ -1,0 +1,114 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-3 col-sm-6"><div class="summary-tile"><span>Today</span><strong>{{ today_usage|floatformat:3 }} L</strong></div></div>
+  <div class="col-md-3 col-sm-6"><div class="summary-tile"><span>This month</span><strong>{{ month_usage|floatformat:3 }} L</strong></div></div>
+  <div class="col-md-3 col-sm-6"><div class="summary-tile"><span>Total billed</span><strong>UGX {{ total_billed|floatformat:0 }}</strong></div></div>
+  <div class="col-md-3 col-sm-6"><div class="summary-tile"><span>Total paid</span><strong>UGX {{ total_paid|floatformat:0 }}</strong></div></div>
+</div>
+
+<div class="row">
+  <div class="col-md-5">
+    <div class="x_panel">
+      <div class="x_title"><h2>{{ meter.meter_code }}</h2><div class="clearfix"></div></div>
+      <div class="x_content">
+        <table class="table">
+          <tr><th>Customer</th><td><a href="{% url 'customer_detail' meter.user.id %}">{{ meter.user.full_name }}</a></td></tr>
+          <tr><th>Phone</th><td>{{ meter.user.phone_number }}</td></tr>
+          <tr><th>Location</th><td>{{ meter.location }}</td></tr>
+          <tr><th>Tariff</th><td>{{ meter.tariff.name|default:"Not assigned" }}{% if meter.tariff %} (UGX {{ meter.tariff.rate_per_litre }}/L){% endif %}</td></tr>
+          <tr><th>Status</th><td><span class="status-badge status-{{ meter.effective_status }}">{{ meter.effective_status }}</span></td></tr>
+          <tr><th>Last seen</th><td>{{ meter.last_seen|default:"Never" }}</td></tr>
+          <tr><th>Flow rate</th><td>{{ meter.current_flow_rate|floatformat:3 }} L/min</td></tr>
+        </table>
+
+        <form method="post">
+          {% csrf_token %}
+          {% if meter.valve_open %}
+            <input type="hidden" name="valve_open" value="false">
+            <button class="btn btn-danger"><i class="fa fa-lock"></i> Close Valve</button>
+          {% else %}
+            <input type="hidden" name="valve_open" value="true">
+            <button class="btn btn-success"><i class="fa fa-unlock"></i> Open Valve</button>
+          {% endif %}
+        </form>
+
+        {% if '*' in role_permissions or 'meters_manage' in role_permissions %}
+        <hr>
+        <form method="post" class="form-inline">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="tariff">
+          <div class="form-group">
+            <label for="tariff_id">Assign tariff</label>
+            <select id="tariff_id" name="tariff_id" class="form-control">
+              {% for tariff in tariffs %}
+                <option value="{{ tariff.id }}" {% if meter.tariff_id == tariff.id %}selected{% endif %}>
+                  {{ tariff.name }} - UGX {{ tariff.rate_per_litre }}/L
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+          <button class="btn btn-primary"><i class="fa fa-save"></i> Update</button>
+        </form>
+        {% endif %}
+
+        {% if meter.qr_code %}
+          <hr><img src="{{ meter.qr_code.url }}" width="120" height="120" alt="Meter QR code">
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-7">
+    <div class="x_panel">
+      <div class="x_title"><h2>30-Day Usage</h2><div class="clearfix"></div></div>
+      <div class="x_content">
+        <table class="table table-striped">
+          <thead><tr><th>Date</th><th>Usage</th></tr></thead>
+          <tbody>
+            {% for row in daily_usage %}
+              <tr><td>{{ row.reading_date }}</td><td>{{ row.total|floatformat:3 }} L</td></tr>
+            {% empty %}
+              <tr><td colspan="2" class="empty-state">No readings recorded.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="x_panel">
+      <div class="x_title"><h2>Valve Activity</h2><div class="clearfix"></div></div>
+      <div class="x_content">
+        <table class="table table-striped">
+          <thead><tr><th>State</th><th>Source</th><th>Changed by</th><th>Time</th></tr></thead>
+          <tbody>
+          {% for item in valve_history %}
+            <tr><td>{% if item.valve_open %}Opened{% else %}Closed{% endif %}</td><td>{{ item.source }}</td><td>{{ item.changed_by|default:"Customer/device" }}</td><td>{{ item.created_at }}</td></tr>
+          {% empty %}<tr><td colspan="4" class="empty-state">No valve changes recorded.</td></tr>{% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="x_panel">
+      <div class="x_title"><h2>Recent Alerts</h2><div class="clearfix"></div></div>
+      <div class="x_content">
+        <table class="table table-striped">
+          <thead><tr><th>Alert</th><th>Severity</th><th>Status</th></tr></thead>
+          <tbody>
+          {% for alert in meter_alerts %}
+            <tr><td><a href="{% url 'alert_detail' alert.id %}">{{ alert.alert_type }}</a></td><td>{{ alert.severity }}</td><td>{{ alert.status }}</td></tr>
+          {% empty %}<tr><td colspan="3" class="empty-state">No alerts for this meter.</td></tr>{% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,164 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+<div class="row">
+
+  <!-- LEFT SIDE: REGISTER METER -->
+  {% if '*' in role_permissions or 'meters_manage' in role_permissions %}
+  <div class="col-md-5 col-sm-12 col-xs-12">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2>Register Meter</h2>
+        <div class="clearfix"></div>
+      </div>
+
+      <div class="x_content">
+
+        <a href="{% url 'add_water_user' %}" class="btn btn-primary">
+          <i class="fa fa-user-plus"></i> Add New User
+        </a>
+      
+        <a href="{% url 'replace_meter' %}" class="btn btn-warning">
+          <i class="fa fa-refresh"></i> Replace Meter
+        </a>
+
+        <a href="{% url 'add_staff' %}" class="btn btn-info">
+          <i class="fa fa-user"></i> Add Staff
+        </a>
+        <br><br>
+
+        <form method="POST">
+          {% csrf_token %}
+
+          <div class="alert alert-info">
+            Meter code will be generated automatically.
+          </div>
+
+          <div class="form-group">
+            <label>User</label>
+            {{ form.user }}
+          </div>
+
+          <div class="form-group">
+            <label>Tariff</label>
+            {{ form.tariff }}
+          </div>
+
+          <div class="form-group">
+            <label>Meter Location</label>
+            {{ form.location }}
+          </div>
+
+          <div class="form-group">
+            <label>Status</label>
+            {{ form.status }}
+          </div>
+
+          <button type="submit" class="btn btn-success">
+            <i class="fa fa-save"></i> Save Meter
+          </button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- RIGHT SIDE: METER LIST -->
+  <div class="{% if '*' in role_permissions or 'meters_manage' in role_permissions %}col-md-7{% else %}col-md-12{% endif %} col-sm-12 col-xs-12">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2>Meter List</h2>
+        <div class="clearfix"></div>
+      </div>
+
+      <div class="x_content">
+        <form method="get" class="filter-bar">
+          <div class="form-group">
+            <label>Search</label>
+            <input class="form-control" name="q" value="{{ query }}" placeholder="Code, owner, location">
+          </div>
+          <div class="form-group">
+            <label>Status</label>
+            <select class="form-control" name="status">
+              <option value="">All statuses</option>
+              <option value="Active" {% if status_filter == 'Active' %}selected{% endif %}>Active</option>
+              <option value="Warning" {% if status_filter == 'Warning' %}selected{% endif %}>Warning</option>
+              <option value="Offline" {% if status_filter == 'Offline' %}selected{% endif %}>Offline (24h)</option>
+            </select>
+          </div>
+          <button class="btn btn-primary"><i class="fa fa-search"></i> Filter</button>
+          <a href="{% url 'meters' %}" class="btn btn-default">Clear</a>
+        </form>
+
+        <table class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>Meter Code</th>
+              <th>Location</th>
+              <th>Owner</th>
+              <th>Tariff</th>
+              <th>Status</th>
+              <th>QR Code</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for meter in meter_rows %}
+            <tr>
+              <td><a href="{% url 'meter_detail' meter.id %}"><strong>{{ meter.meter_code }}</strong></a></td>
+              <td>{{ meter.location }}</td>
+              <td>{{ meter.user.full_name }}</td>
+              <td>{{ meter.tariff.name|default:"Not assigned" }}</td>
+              <td>
+                <span class="status-badge status-{{ meter.effective_status }}">
+                  {{ meter.effective_status }}
+                </span>
+              </td>
+              <td>
+                {% if meter.qr_code %}
+                  <a href="{{ meter.qr_code.url }}" target="_blank">
+                    <img src="{{ meter.qr_code.url }}" width="80" height="80" alt="QR Code">
+                  </a>
+                  <br>
+                  <small>Click to open</small>
+                {% else %}
+                  No QR
+                {% endif %}
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="6" style="text-align:center;">No meters registered yet</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <!-- ✅ PAGINATION ADDED HERE -->
+        <div class="text-center">
+          <ul class="pagination">
+
+            {% if meter_rows.has_previous %}
+              <li><a href="?q={{ query }}&status={{ status_filter }}&page=1">&laquo; First</a></li>
+              <li><a href="?q={{ query }}&status={{ status_filter }}&page={{ meter_rows.previous_page_number }}">Previous</a></li>
+            {% endif %}
+
+            <li class="active">
+              <span>Page {{ meter_rows.number }} of {{ meter_rows.paginator.num_pages }}</span>
+            </li>
+
+            {% if meter_rows.has_next %}
+              <li><a href="?q={{ query }}&status={{ status_filter }}&page={{ meter_rows.next_page_number }}">Next</a></li>
+              <li><a href="?q={{ query }}&status={{ status_filter }}&page={{ meter_rows.paginator.num_pages }}">Last &raquo;</a></li>
+            {% endif %}
+
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

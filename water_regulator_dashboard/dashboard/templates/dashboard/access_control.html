@@ -1,0 +1,62 @@
+{% extends 'dashboard/base.html' %}
+{% block content %}
+<div class="x_panel">
+  <div class="x_title"><h2>Role Responsibilities</h2><div class="clearfix"></div></div>
+  <div class="x_content">
+    <table class="table table-bordered">
+      <thead><tr><th>Role</th><th>Access</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Administrator</strong></td><td>Complete system access, including roles and access control.</td></tr>
+        <tr><td><strong>Regulator</strong></td><td>Meter and customer operations, readings, alerts, reports, support, staff, replacements and audit trail.</td></tr>
+        <tr><td><strong>Technician</strong></td><td>Meters, valve control, readings, alerts, offline monitoring and meter replacements.</td></tr>
+        <tr><td><strong>Finance</strong></td><td>Revenue, payments, reports and tariff management.</td></tr>
+        <tr><td><strong>Support</strong></td><td>Customer accounts, support tickets and customer notifications.</td></tr>
+        <tr><td><strong>Viewer</strong></td><td>Read-only dashboard, readings, daily usage and reports.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="x_panel">
+  <div class="x_title"><h2>Regulator User Roles</h2><div class="clearfix"></div></div>
+  <div class="x_content">
+    <div class="alert alert-info">
+      Superusers are Administrators and always retain complete access.
+    </div>
+    <table class="table table-striped">
+      <thead><tr><th>Username</th><th>Email</th><th>Role</th><th>Account</th><th>Action</th></tr></thead>
+      <tbody>
+      {% for account in users %}
+        <tr>
+          <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="user_id" value="{{ account.id }}">
+            <td>{{ account.username }}{% if account.is_superuser %} <span class="label label-danger">Administrator</span>{% endif %}</td>
+            <td>{{ account.email }}</td>
+            <td>
+              {% if account.is_superuser %}
+                Administrator
+              {% else %}
+                <select name="role" class="form-control input-sm">
+                  {% for value,label in roles %}
+                    <option value="{{ value }}" {% if account.dashboard_profile.role == value %}selected{% endif %}>{{ label }}</option>
+                  {% endfor %}
+                </select>
+              {% endif %}
+            </td>
+            <td>{% if account.is_active %}Active{% else %}Disabled{% endif %}</td>
+            <td>
+              {% if not account.is_superuser %}
+                <button class="btn btn-primary btn-xs"><i class="fa fa-save"></i> Update</button>
+              {% else %}
+                <span class="text-muted">System administrator</span>
+              {% endif %}
+            </td>
+          </form>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

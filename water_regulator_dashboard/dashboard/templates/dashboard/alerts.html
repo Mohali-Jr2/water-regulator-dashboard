@@ -1,0 +1,15 @@
+{% extends 'dashboard/base.html' %}
+{% block content %}
+<div class="x_panel"><div class="x_title"><h2>Alert Workflow</h2><div class="clearfix"></div></div><div class="x_content">
+  <form method="get" class="filter-bar">
+    <div class="form-group"><label>Search</label><input class="form-control" name="q" value="{{ query }}" placeholder="Meter or alert"></div>
+    <div class="form-group"><label>Status</label><select class="form-control" name="status"><option value="">All</option><option {% if status_filter == 'Open' %}selected{% endif %}>Open</option><option {% if status_filter == 'Acknowledged' %}selected{% endif %}>Acknowledged</option><option {% if status_filter == 'Resolved' %}selected{% endif %}>Resolved</option></select></div>
+    <div class="form-group"><label>Severity</label><select class="form-control" name="severity"><option value="">All</option><option {% if severity_filter == 'High' %}selected{% endif %}>High</option><option {% if severity_filter == 'Medium' %}selected{% endif %}>Medium</option><option {% if severity_filter == 'Low' %}selected{% endif %}>Low</option></select></div>
+    <button class="btn btn-primary"><i class="fa fa-search"></i> Filter</button>
+  </form>
+  <table class="table table-striped"><thead><tr><th>Meter</th><th>Alert</th><th>Severity</th><th>Status</th><th>Assigned To</th><th>Time</th><th></th></tr></thead><tbody>
+  {% for alert in alerts %}<tr><td><a href="{% url 'meter_detail' alert.meter.id %}">{{ alert.meter.meter_code }}</a></td><td>{{ alert.alert_type }}</td><td class="severity-{{ alert.severity }}">{{ alert.severity }}</td><td>{{ alert.status }}</td><td>{{ alert.assigned_to|default:"Unassigned" }}</td><td>{{ alert.created_at }}</td><td><a href="{% url 'alert_detail' alert.id %}" class="btn btn-primary btn-xs">Manage</a></td></tr>
+  {% empty %}<tr><td colspan="7" class="empty-state">No matching alerts.</td></tr>{% endfor %}
+  </tbody></table>
+</div></div>
+{% endblock %}

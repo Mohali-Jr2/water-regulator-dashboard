@@ -1,0 +1,53 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+
+<div class="x_panel">
+  <div class="x_title">
+    <h2>Add Another Meter for {{ user.full_name }}</h2>
+    <div class="clearfix"></div>
+  </div>
+
+  <div class="x_content">
+
+    <div class="alert alert-info">
+      Meter code will be generated automatically.
+    </div>
+
+    <p>
+      <strong>User:</strong> {{ user.full_name }} <br>
+      <strong>Phone:</strong> {{ user.phone_number }} <br>
+      <strong>NIN:</strong> {{ user.nin }}
+    </p>
+
+    <form method="POST">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label>Tariff</label>
+        {{ form.tariff }}
+      </div>
+
+      <div class="form-group">
+        <label>Meter Location</label>
+        {{ form.location }}
+      </div>
+
+      <div class="form-group">
+        <label>Status</label>
+        {{ form.status }}
+      </div>
+
+      <button type="submit" class="btn btn-success">
+        <i class="fa fa-plus"></i> Assign Extra Meter
+      </button>
+
+      <a href="{% url 'assigned_meter_users' %}" class="btn btn-default">
+        Cancel
+      </a>
+    </form>
+
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'dashboard/base.html' %}
+{% block content %}
+<div class="row"><div class="col-md-7">
+  <div class="x_panel">
+    <div class="x_title"><h2>{{ heading }}</h2><div class="clearfix"></div></div>
+    <div class="x_content">
+      <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="form-group"><label>{{ field.label }}</label>{{ field }}{{ field.errors }}</div>
+        {% endfor %}
+        <button class="btn btn-success"><i class="fa fa-save"></i> Save Update</button>
+        <a class="btn btn-default" href="{% url back_url %}">Cancel</a>
+      </form>
+    </div>
+  </div>
+</div></div>
+{% endblock %}

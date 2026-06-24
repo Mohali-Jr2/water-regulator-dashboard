@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*.log
+.pytest_cache/
+
+# Virtual environments
+venv/
+.venv/
+
+# Django local data and secrets
+water_regulator_dashboard/db.sqlite3
+water_regulator_dashboard/media/
+water_regulator_dashboard/staticfiles/
+.env
+water_regulator_dashboard/.env
+
+# Editors and operating systems
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db

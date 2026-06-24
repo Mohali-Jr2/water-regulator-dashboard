@@ -1,0 +1,78 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+<div class="row tile_count">
+  <div class="col-md-4 col-sm-6 col-xs-12">
+    <div class="x_panel metric-card">
+      <div class="x_content">
+        <span><i class="fa fa-tint"></i> Total Usage Today</span>
+        <div class="metric-number">{{ today_usage|floatformat:3 }} L</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 col-sm-6 col-xs-12">
+    <div class="x_panel metric-card">
+      <div class="x_content">
+        <span><i class="fa fa-dashboard"></i> Meters Tracked</span>
+        <div class="metric-number">{{ total_meters }}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4 col-sm-6 col-xs-12">
+    <div class="x_panel metric-card">
+      <div class="x_content">
+        <span><i class="fa fa-line-chart"></i> Active Usage Meters</span>
+        <div class="metric-number">{{ active_usage_meters }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="x_panel">
+      <div class="x_title">
+        <h2><i class="fa fa-tint"></i> Daily Usage By Meter</h2>
+        <div class="clearfix"></div>
+      </div>
+
+      <div class="x_content">
+        <table class="table table-striped table-bordered">
+          <thead>
+            <tr>
+              <th>Meter Code</th>
+              <th>Owner</th>
+              <th>Location</th>
+              <th>Usage Today (L)</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in daily_meter_usage_rows %}
+            <tr>
+              <td>{{ row.meter }}</td>
+              <td>{{ row.owner }}</td>
+              <td>{{ row.location }}</td>
+              <td><strong>{{ row.usage|floatformat:3 }}</strong></td>
+              <td>
+                {% if row.usage > 0 %}
+                  <span class="label label-success">Reporting</span>
+                {% else %}
+                  <span class="label label-default">No usage today</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="5" class="text-center text-muted">No meters available.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

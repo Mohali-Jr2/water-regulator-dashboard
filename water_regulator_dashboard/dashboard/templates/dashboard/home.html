@@ -1,0 +1,256 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+
+<div class="row tile_count">
+
+  <!-- TOTAL METERS -->
+  {% if '*' in role_permissions or 'meters_view' in role_permissions %}
+  <div class="col-md-3 col-sm-6 col-xs-12">
+    <div class="x_panel metric-card">
+      <div class="x_content">
+
+        <span><i class="fa fa-tachometer"></i> Total Meters</span>
+        <div class="metric-number">{{ total_meters }}</div>
+
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- ACTIVE METERS -->
+  {% if '*' in role_permissions or 'offline_monitoring' in role_permissions %}
+  <div class="col-md-3 col-sm-6 col-xs-12">
+    <div class="x_panel metric-card">
+      <div class="x_content">
+
+        <span><i class="fa fa-check-circle"></i> Online Meters</span>
+        <div class="metric-number">{{ active_meters }}</div>
+        <a href="{% url 'offline_meters' %}">{{ offline_meters }} offline for 24+ hours</a>
+
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- ALERTS -->
+  {% if '*' in role_permissions or 'alerts' in role_permissions %}
+  <div class="col-md-3 col-sm-6 col-xs-12">
+    <div class="x_panel metric-card">
+      <div class="x_content">
+
+        <span><i class="fa fa-bell"></i> Open Alerts</span>
+        <div class="metric-number">{{ open_alerts }}</div>
+
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- USAGE -->
+  {% if '*' in role_permissions or 'readings' in role_permissions or 'reports' in role_permissions %}
+  <div class="col-md-3 col-sm-6 col-xs-12">
+    <div class="x_panel metric-card">
+      <div class="x_content">
+
+        <span><i class="fa fa-tint"></i> Usage Today</span>
+        <div class="metric-number">{{ today_usage }} L</div>
+
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+
+<!-- SECOND ROW -->
+{% if '*' in role_permissions or 'readings' in role_permissions or 'alerts' in role_permissions %}
+<div class="row">
+
+  <!-- CHART -->
+  {% if '*' in role_permissions or 'readings' in role_permissions %}
+  <div class="col-md-8 col-sm-12 col-xs-12">
+    <div class="x_panel">
+
+      <div class="x_title">
+        <h2><i class="fa fa-bar-chart"></i> Weekly Water Usage</h2>
+        <div class="clearfix"></div>
+      </div>
+
+      <div class="x_content" style="height:300px;">
+        <canvas id="usageChart"></canvas>
+      </div>
+
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- ALERTS -->
+  {% if '*' in role_permissions or 'alerts' in role_permissions %}
+  <div class="col-md-4 col-sm-12 col-xs-12">
+    <div class="x_panel">
+
+      <div class="x_title">
+        <h2><i class="fa fa-warning"></i> Current Alerts</h2>
+        <div class="clearfix"></div>
+      </div>
+
+      <div class="x_content">
+
+        {% for alert in alert_rows %}
+          <div class="alert alert-warning">
+            <strong>{{ alert.meter }}</strong><br>
+            {{ alert.type }}<br>
+            <span class="label label-danger">{{ alert.severity }}</span>
+            • {{ alert.time }}
+          </div>
+        {% empty %}
+          <p class="text-muted">No active alerts.</p>
+        {% endfor %}
+
+      </div>
+
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+{% endif %}
+
+<!-- THIRD ROW -->
+{% if '*' in role_permissions or 'revenue' in role_permissions %}
+<div class="row">
+
+  <!-- PAYMENTS -->
+  <div class="col-md-6 col-sm-12 col-xs-12">
+    <div class="x_panel">
+
+      <div class="x_title">
+        <h2><i class="fa fa-money"></i> Recent Payments</h2>
+        <div class="clearfix"></div>
+      </div>
+
+      <div class="x_content">
+
+        <table class="table table-striped table-bordered">
+          <thead>
+            <tr>
+              <th>Meter</th>
+              <th>Amount</th>
+              <th>Method</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for payment in recent_payments %}
+            <tr>
+              <td>{{ payment.bill.meter_code }}</td>
+              <td>UGX {{ payment.amount_paid }}</td>
+              <td>{{ payment.payment_method }}</td>
+              <td><span class="label label-success">{{ payment.payment_status }}</span></td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4" class="text-center text-muted">No payments yet.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+      </div>
+
+    </div>
+  </div>
+
+</div>
+{% endif %}
+
+<!-- FOURTH ROW -->
+{% if '*' in role_permissions or 'meters_view' in role_permissions %}
+<div class="row">
+
+  <!-- METER STATUS -->
+  <div class="col-md-12 col-sm-12 col-xs-12">
+
+    <div class="x_panel">
+
+      <div class="x_title">
+        <h2><i class="fa fa-dashboard"></i> Recent Meter Status</h2>
+        <div class="clearfix"></div>
+      </div>
+
+      <div class="x_content">
+
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Meter Code</th>
+              <th>Location</th>
+              <th>Owner</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for meter in meter_rows %}
+            <tr>
+              <td><a href="{% url 'meter_detail' meter.id %}">{{ meter.code }}</a></td>
+              <td>{{ meter.location }}</td>
+              <td>{{ meter.owner }}</td>
+              <td>{{ meter.status }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4" class="text-center text-muted">No meters available.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script>
+const ctx = document.getElementById('usageChart');
+
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: [
+      {% for row in reading_rows %}
+        "{{ row.reading_date|default:'-' }}",
+      {% endfor %}
+    ],
+    datasets: [{
+      label: 'Usage (litres)',
+      data: [
+        {% for row in reading_rows %}
+          {{ row.usage_litres }},
+        {% endfor %}
+      ],
+      backgroundColor: 'rgba(26, 187, 156, 0.7)',
+      borderWidth: 1
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: { beginAtZero: true }
+    }
+  }
+});
+</script>
+
+{% endblock %}

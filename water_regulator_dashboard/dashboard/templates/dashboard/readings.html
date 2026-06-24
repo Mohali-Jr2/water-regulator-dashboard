@@ -1,0 +1,27 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <div class="x_panel">
+      <div class="x_title"><h2>Reading Summary</h2><div class="clearfix"></div></div>
+      <div class="x_content">
+        <table class="table table-striped">
+          <thead>
+            <tr><th>Meter</th><th>Day</th><th>Usage (L)</th></tr>
+          </thead>
+          <tbody>
+            {% for row in reading_rows %}
+            <tr>
+              <td>{{ row.meter }}</td>
+              <td>{{ row.day }}</td>
+              <td>{{ row.usage }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

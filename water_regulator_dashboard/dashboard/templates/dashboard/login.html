@@ -1,0 +1,278 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AquaRegulator Login</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style>
+    :root {
+      --navy: #071b2f;
+      --blue: #0f6fb2;
+      --aqua: #26c6da;
+      --mint: #22b573;
+      --amber: #f5a623;
+      --ink: #12263a;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: #fff;
+      background: var(--navy);
+    }
+
+    .landing {
+      min-height: 100vh;
+      background:
+        linear-gradient(90deg, rgba(7, 27, 47, .96) 0%, rgba(7, 27, 47, .82) 38%, rgba(7, 27, 47, .42) 72%, rgba(7, 27, 47, .32) 100%),
+        url("{% static 'dashboard/img/water-operations-hero.png' %}") center right / cover no-repeat;
+      display: flex;
+      align-items: center;
+      padding: 36px;
+    }
+
+    .landing-inner {
+      width: 100%;
+      max-width: 1180px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) 420px;
+      gap: 42px;
+      align-items: center;
+    }
+
+    .brand-mark {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 38px;
+      font-weight: 800;
+      letter-spacing: .4px;
+    }
+
+    .brand-mark i {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+      color: var(--blue);
+      box-shadow: 0 14px 34px rgba(38, 198, 218, .28);
+    }
+
+    .hero-copy h1 {
+      margin: 0;
+      max-width: 680px;
+      font-size: 56px;
+      line-height: 1.02;
+      font-weight: 900;
+    }
+
+    .hero-copy p {
+      max-width: 580px;
+      margin: 20px 0 28px;
+      color: rgba(255,255,255,.78);
+      font-size: 17px;
+      line-height: 1.7;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(120px, 1fr));
+      max-width: 640px;
+      gap: 14px;
+    }
+
+    .hero-stat {
+      padding: 15px;
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 8px;
+      background: rgba(255,255,255,.08);
+      backdrop-filter: blur(12px);
+    }
+
+    .hero-stat strong {
+      display: block;
+      font-size: 24px;
+      color: #fff;
+    }
+
+    .hero-stat span {
+      color: rgba(255,255,255,.68);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+    }
+
+    .login-panel {
+      background: rgba(255,255,255,.96);
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 28px 80px rgba(0,0,0,.28);
+    }
+
+    .login-panel h2 {
+      margin: 0 0 8px;
+      font-weight: 900;
+    }
+
+    .login-panel .muted {
+      color: #6b7b8f;
+      margin-bottom: 24px;
+    }
+
+    .form-control {
+      height: 48px;
+      border-radius: 8px;
+      border: 1px solid #d7e1ec;
+      box-shadow: none;
+    }
+
+    .btn-login {
+      height: 50px;
+      border-radius: 8px;
+      border: 0;
+      background: linear-gradient(135deg, var(--blue), var(--aqua));
+      color: #fff;
+      font-weight: 800;
+      box-shadow: 0 12px 28px rgba(15,111,178,.25);
+    }
+
+    .btn-login:hover,
+    .btn-login:focus {
+      color: #fff;
+      filter: brightness(.96);
+    }
+
+    .login-links {
+      margin-top: 18px;
+      text-align: center;
+    }
+
+    .login-links a {
+      color: var(--blue);
+      font-weight: 700;
+    }
+
+    .system-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255,255,255,.78);
+      margin-bottom: 18px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: rgba(34,181,115,.18);
+      border: 1px solid rgba(34,181,115,.28);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    @media (max-width: 900px) {
+      .landing {
+        padding: 22px;
+        align-items: flex-start;
+      }
+
+      .landing-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-copy h1 {
+        font-size: 38px;
+      }
+
+      .hero-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .login-panel {
+        padding: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="landing">
+    <div class="landing-inner">
+      <section class="hero-copy">
+        <div class="brand-mark">
+          <i class="fa fa-tint"></i>
+          <span>AquaRegulator</span>
+        </div>
+
+        <div class="system-chip">
+          <i class="fa fa-signal"></i>
+          Live smart water regulation system
+        </div>
+
+        <h1>We believe every customer deserves clear insight into their water usage and billing.</h1>
+        <p>
+          Helping you stay informed, involved,
+          and confident in every charge.
+        </p>
+
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <strong>IoT</strong>
+            <span>Meter telemetry</span>
+          </div>
+          <div class="hero-stat">
+            <strong>24/7</strong>
+            <span>Valve visibility</span>
+          </div>
+          <div class="hero-stat">
+            <strong>UGX</strong>
+            <span>Revenue tracking</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="login-panel">
+        <h2>Regulator Login</h2>
+        <p class="muted">Sign in to manage meters, readings, alerts, billing, and field operations.</p>
+
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-info">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+
+        <form method="POST">
+          {% csrf_token %}
+
+          <div class="form-group">
+            <label>Username</label>
+            <input type="text" name="username" class="form-control" required>
+          </div>
+
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" name="password" class="form-control" required>
+          </div>
+
+          <button type="submit" class="btn btn-login btn-block">
+            Login to Dashboard
+          </button>
+        </form>
+
+        <div class="login-links">
+          <p><a href="{% url 'forgot_account' %}">Forgot username, email or password?</a></p>
+          <p>No account? <a href="{% url 'signup' %}">Create one</a></p>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

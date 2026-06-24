@@ -1,0 +1,198 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Create Regulator Account</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style>
+    body {
+      min-height: 100vh;
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        linear-gradient(90deg, rgba(7, 27, 47, .96), rgba(7, 27, 47, .74)),
+        url("{% static 'dashboard/img/water-operations-hero.png' %}") center right / cover no-repeat;
+      color: #12263a;
+      display: flex;
+      align-items: center;
+      padding: 28px;
+    }
+
+    .signup-wrap {
+      width: 100%;
+      max-width: 1040px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 430px;
+      gap: 46px;
+      align-items: center;
+    }
+
+    .copy {
+      color: #fff;
+    }
+
+    .copy .mark {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 24px;
+      font-weight: 900;
+    }
+
+    .copy .mark i {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      color: #0f6fb2;
+    }
+
+    .copy h1 {
+      margin: 0;
+      max-width: 620px;
+      font-size: 46px;
+      line-height: 1.08;
+      font-weight: 900;
+    }
+
+    .copy p {
+      margin-top: 18px;
+      max-width: 560px;
+      color: rgba(255,255,255,.78);
+      line-height: 1.7;
+      font-size: 16px;
+    }
+
+    .signup-panel {
+      background: rgba(255,255,255,.96);
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 28px 80px rgba(0,0,0,.28);
+    }
+
+    .signup-panel h2 {
+      margin: 0 0 8px;
+      font-weight: 900;
+    }
+
+    .signup-panel .muted {
+      color: #6b7b8f;
+      margin-bottom: 22px;
+    }
+
+    .form-control {
+      height: 46px;
+      border-radius: 8px;
+      border: 1px solid #d7e1ec;
+      box-shadow: none;
+    }
+
+    .btn-create {
+      height: 50px;
+      border: 0;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #0f6fb2, #26c6da);
+      color: #fff;
+      font-weight: 800;
+    }
+
+    .btn-create:hover,
+    .btn-create:focus {
+      color: #fff;
+      filter: brightness(.96);
+    }
+
+    a {
+      color: #0f6fb2;
+      font-weight: 700;
+    }
+
+    @media (max-width: 900px) {
+      body {
+        align-items: flex-start;
+        padding: 22px;
+      }
+
+      .signup-wrap {
+        grid-template-columns: 1fr;
+      }
+
+      .copy h1 {
+        font-size: 34px;
+      }
+
+      .signup-panel {
+        padding: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="signup-wrap">
+    <section class="copy">
+      <div class="mark">
+        <i class="fa fa-tint"></i>
+        <span>AquaRegulator</span>
+      </div>
+      <h1>We believe every customer deserves clear insight into their water usage and billing.</h1>
+      <p>
+        Helping you stay informed, involved,
+        and confident in every charge.
+      </p>
+    </section>
+
+    <section class="signup-panel">
+      <h2>Create Account</h2>
+      <p class="muted">Set up a regulator account for the dashboard.</p>
+
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-info">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+
+      <form method="POST">
+        {% csrf_token %}
+
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" name="username" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" name="email" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" name="password" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+          <label>Confirm Password</label>
+          <input type="password" name="confirm_password" class="form-control" required>
+        </div>
+
+        <button type="submit" class="btn btn-create btn-block">
+          Create Account
+        </button>
+      </form>
+
+      <hr>
+
+      <p class="text-center">
+        Already have an account?
+        <a href="{% url 'login' %}">Login</a>
+      </p>
+    </section>
+  </main>
+</body>
+</html>
