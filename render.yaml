@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: aquapulse-water-regulator
+    runtime: python
+    plan: free
+    rootDir: water_regulator_dashboard
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    startCommand: python manage.py migrate && gunicorn water_regulator_dashboard.wsgi:application
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.5
+      - key: DEBUG
+        value: "False"
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: IOT_API_KEY
+        generateValue: true
+      - key: ALLOWED_HOSTS
+        value: aquapulse-water-regulator.onrender.com
+      - key: QR_BASE_URL
+        value: https://aquapulse-water-regulator.onrender.com
+      - key: CSRF_TRUSTED_ORIGINS
+        value: https://aquapulse-water-regulator.onrender.com
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://mohali-jr2.github.io
+      - key: DATABASE_URL
+        sync: false
