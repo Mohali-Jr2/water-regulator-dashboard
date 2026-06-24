@@ -780,11 +780,23 @@ def mobile_login(request):
             status=401
         )
 
+    user_meters = Meter.objects.filter(user=user).order_by("meter_code")
+
     return Response({
         "success": True,
         "full_name": user.full_name,
         "meter_code": meter.meter_code,
-        "location": meter.location
+        "location": meter.location,
+        "meters": [
+            {
+                "meter_code": item.meter_code,
+                "location": item.location,
+                "status": item.effective_status,
+                "valve_open": item.valve_open,
+                "tariff": item.tariff.name if item.tariff else "Not assigned",
+            }
+            for item in user_meters
+        ],
     })
 
 # =========================
