@@ -45,6 +45,9 @@ def get_meter(meter_code):
         return None
 
 
+API_KEY = "MY_SECRET_123"
+
+
 def current_rate(meter=None):
     if (
         meter
@@ -116,7 +119,7 @@ def complete_mobile_money_transaction(momo_transaction):
         return momo_transaction
 
 def is_authorized(request):
-    return request.headers.get("X-API-KEY") == settings.IOT_API_KEY
+    return request.headers.get("X-API-KEY") == API_KEY
 
 
 # =========================
